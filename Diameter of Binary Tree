@@ -1,0 +1,117 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public int maxdia = Integer.MIN_VALUE;
+    public int height(TreeNode root){
+        if(root == null){
+            return 0;
+        }
+        int lh = height(root.left);
+        int rh = height(root.right);
+        int val = lh+rh;
+        if(val > maxdia){
+            maxdia = val;
+        }
+        return Math.max(lh,rh) + 1;
+    }
+    public int diameterOfBinaryTree(TreeNode root) {
+        height(root);
+        return maxdia;
+    }
+}
+
+
+**********************************************************************************
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.io.*;
+import java.util.*;
+
+
+
+class Main {
+    static Node buildTree(String str) {
+        if (str.length() == 0 || str.charAt(0) == 'N') {
+            return null;
+        }
+        String ip[] = str.split(" ");
+        Node root = new Node(Integer.parseInt(ip[0]));
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        int i = 1;
+        while (queue.size() > 0 && i < ip.length) {
+            Node currNode = queue.peek();
+            queue.remove();
+            String currVal = ip[i];
+            if (!currVal.equals("N")) {
+                currNode.left = new Node(Integer.parseInt(currVal));
+                queue.add(currNode.left);
+            }
+            i++;
+            if (i >= ip.length) break;
+            currVal = ip[i];
+            if (!currVal.equals("N")) {
+                currNode.right = new Node(Integer.parseInt(currVal));
+                queue.add(currNode.right);
+            }
+            i++;
+        }
+
+        return root;
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br =new BufferedReader(new InputStreamReader(System.in));
+        String s1 = br.readLine();
+        Node root1 = buildTree(s1);
+        Solution g = new Solution();
+        System.out.println(g.diameter(root1));
+    }
+}
+
+
+class Node {
+    int data;
+    Node left;
+    Node right;
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
+
+class Solution {
+
+    static int maxdia = Integer.MIN_VALUE;
+    public static int height(Node root){
+        if(root == null){
+            return 0;
+        }
+        int lh = height(root.left);
+        int rh = height(root.right);
+        int val = lh+rh+1;
+        if(val > maxdia){
+            maxdia = val;
+        }
+        return Math.max(lh,rh)+1;
+    }
+    public static int diameter(Node root) {
+        height(root);
+        return maxdia;
+    }
+}
