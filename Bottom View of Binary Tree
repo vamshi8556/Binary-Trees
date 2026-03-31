@@ -1,0 +1,88 @@
+/*
+class Node {
+    int data;
+    Node left;
+    Node right;
+
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
+*/
+
+class Solution {
+    public class pair{
+        Node node;
+        int idx;
+        pair(Node node, int idx){
+            this.node = node;
+            this.idx = idx;
+        }
+    }
+    public int minleft = 0;
+    public int maxright = 0;
+    public void getleftmin(Node root, int idx){
+        if(root == null){
+            return;
+        }
+        minleft = Math.min(minleft,idx);
+        getleftmin(root.left,idx-1);
+        getleftmin(root.right,idx+1);
+    }
+    public void getrightmax(Node root, int idx){
+        if(root == null){
+            return;
+        }
+        maxright = Math.max(maxright,idx);
+        getrightmax(root.right,idx+1);
+        getrightmax(root.left,idx-1);
+    }
+    public ArrayList<Integer> bottomView(Node root) {
+        getleftmin(root,0);
+        getrightmax(root,0);
+        int n = maxright - minleft + 1;
+        LinkedList<pair> q = new LinkedList<>();
+        ArrayList<Integer> li = new ArrayList<>();
+        for(int i=0 ; i<n ; i++){
+            li.add(0);
+        }
+        q.addLast(new pair(root,0));
+        while(q.size() != 0){
+            int size = q.size();
+            while(size != 0){
+                pair rem = q.removeFirst();
+                int idx = rem.idx + Math.abs(minleft);
+                li.set(idx,rem.node.data);
+                if(rem.node.left != null){
+                    q.addLast(new pair(rem.node.left,rem.idx-1));
+                }
+                if(rem.node.right != null){
+                    q.addLast(new pair(rem.node.right,rem.idx+1));
+                }
+                size--;
+            }
+        }
+        return li;
+        
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
