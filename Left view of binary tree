@@ -1,0 +1,74 @@
+import java.util.*;
+import java.io.*;
+
+class Node{
+    int val;
+    Node left, right;
+    Node(int val){
+        this.val = val;
+        left = null;
+        right = null;
+    }
+}
+class BST{
+    Node root = null;
+    BST(){
+
+    }
+    Node insert(Node root, int val){
+        if(root == null){
+            root = new Node(val);
+            return root;
+        }
+        if(val < root.val){
+            root.left = insert(root.left, val);
+        }else{
+            root.right = insert(root.right, val);
+        }
+        return root;
+    }
+}
+
+public class Main {
+    
+    public static void main(String args[]) {
+        Scanner input = new Scanner(System.in);
+        int n = input.nextInt();
+        BST t = new BST();
+        for(int i = 0; i < n; i++){
+            t.root = t.insert(t.root, input.nextInt());
+        }
+        
+        Solution Accio=new Solution();
+        Accio.letfView(t.root);
+    }
+}
+
+class Solution
+{
+    public static void letfView(Node root){
+        LinkedList<Node> q = new LinkedList<>();
+        ArrayList<Integer> ans = new ArrayList<>();
+        q.addLast(root);
+        while(q.size() != 0){
+            int size = q.size();
+            Node temp = null;
+            while(size != 0){
+                Node node = q.removeFirst();
+                temp = node;
+                if(node.right != null){
+                    q.addLast(node.right);
+                }
+                if(node.left != null){
+                    q.addLast(node.left);
+                }
+                size--;
+            }
+            ans.add(temp.val);
+        }
+        for(int i=0 ; i<ans.size() ; i++){
+            System.out.print(ans.get(i)+" ");
+        }
+    }
+    
+}
