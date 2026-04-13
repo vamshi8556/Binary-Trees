@@ -1,0 +1,159 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    HashMap<Integer, TreeNode> map = new HashMap<>();
+    TreeNode infect;
+    public void findinfected(TreeNode root, int val, TreeNode par){
+        if(root == null){
+            return ;
+        }
+        map.put(root.val,par);
+        if(root.val == val){
+            infect = root;
+        }
+        findinfected(root.left, val, root);
+        findinfected(root.right, val, root);
+    }
+    public int amountOfTime(TreeNode root, int start) {
+        findinfected(root,start,null);
+        int time = -1;
+        HashSet<Integer> visit = new HashSet<>();
+        LinkedList<TreeNode> q = new LinkedList<>();
+        q.addLast(infect);
+        while(q.size() != 0){
+            int size = q.size();
+            while(size != 0){
+                TreeNode rem = q.removeFirst();
+                visit.add(rem.val);
+                TreeNode pare = map.get(rem.val);
+                if(pare != null && !visit.contains(pare.val)){
+                    q.addLast(pare);
+                }
+                if(rem.left != null && !visit.contains(rem.left.val)){
+                    q.addLast(rem.left);
+                }
+                if(rem.right != null && !visit.contains(rem.right.val)){
+                    q.addLast(rem.right);
+                }
+                size--;
+            }
+            time++;
+        }
+        return time;
+    }
+}
+
+*********************************************************************
+
+import java.util.*;
+
+public class Main {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    int n = sc.nextInt();
+    String[] arr = new String[n];
+    for (int i = 0; i < n; i++) arr[i] = sc.next();
+    int k = sc.nextInt();
+    sc.close();
+    Node tree = levelOrderCreateTree(arr);
+    System.out.println(timeToBurnTree(tree, k));
+  }
+  static HashMap<Node, Node> map = new HashMap<>();
+  static Node infect = null;
+  public static void findstart(Node root, int valu, Node par){
+    if(root == null){
+      return;
+    }
+    map.put(root,par);
+    if(root.data == valu){
+      infect = root;
+    }
+    findstart(root.left, valu, root);
+    findstart(root.right, valu, root);
+  }
+  public static int timeToBurnTree(Node root, int start) {
+    findstart(root, start, null);
+    int time = -1;
+    HashSet<Node> visit = new HashSet<>();
+    LinkedList<Node> q = new LinkedList<>();
+    if(infect == null){
+      return 0;
+    }
+    q.addLast(infect);
+    while(q.size() != 0){
+      int size = q.size();
+      while(size != 0){
+        Node rem = q.removeFirst();
+        visit.add(rem);
+        Node pare = map.get(rem);
+        if(pare != null && !visit.contains(pare)){
+          q.addLast(pare);
+        }
+        if(rem.left != null && !visit.contains(rem.left)){
+          q.addLast(rem.left);
+        } 
+        if(rem.right != null && !visit.contains(rem.right)){
+          q.addLast(rem.right);
+        }
+        size--;
+      }
+      time++;
+    }
+    return time;
+  }
+
+  static void createTree(Node node, int i, String[] arr) {
+    if (node != null) {
+      if (2 * i + 1 < arr.length) {
+        if (arr[2 * i + 1].equals("null")) {
+          node.left = null;
+        } else {
+          node.left = new Node(Integer.parseInt(arr[2 * i + 1]));
+        }
+        createTree(node.left, 2 * i + 1, arr);
+      }
+      if (2 * i + 2 < arr.length) {
+        if (arr[2 * i + 2].equals("null")) {
+          node.right = null;
+        } else {
+          node.right = new Node(Integer.parseInt((arr[2 * i + 2])));
+        }
+        createTree(node.right, 2 * i + 2, arr);
+      }
+    }
+  }
+
+  static Node levelOrderCreateTree(String[] arr) {
+    if (arr.length == 0) return null;
+    Node head = new Node(
+      Integer.parseInt(arr[0])
+    );
+    createTree(head, 0, arr);
+    return head;
+  }
+}
+
+class Node {
+
+  int data;
+  Node left;
+  Node right;
+
+  public Node(int data) {
+    this.data = data;
+  }
+}
